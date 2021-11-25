@@ -23,7 +23,7 @@ public class SendController {
     }
 
 
-    @PostMapping("/")
+    @PostMapping("")
     ResponseEntity<Boolean> newUser(@RequestBody EmailBody emailBody){
         return new ResponseEntity<Boolean>(emailPort.sendEmail(emailBody), HttpStatus.CREATED);
     }
