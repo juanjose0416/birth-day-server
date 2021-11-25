@@ -39,8 +39,9 @@ public class EmailService implements EmailPort {
                 StandardCharsets.UTF_8.name());
         try {
             helper.addAttachment("loguito.png", new ClassPathResource("logo.png"));
-            String inlineImage = "<img src=\"cid:loguito.png\" width=\"200\" height=\"200\"></img><br/>";
+            String inlineImage = "<img src=\"cid:loguito\" width=\"200\" height=\"200\"></img><br/>";
             helper.setText(inlineImage + textMessage, true);
+            helper.addInline("loguito", new ClassPathResource("logo.png"));
             helper.setSubject(subject);
             helper.setTo(email);
             sender.send(message);
