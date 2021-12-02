@@ -1,8 +1,13 @@
 package com.example.birthday.service;
 
+import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+import javax.imageio.ImageIO;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -28,21 +33,22 @@ public class EmailService implements EmailPort {
     @Override
     public boolean sendEmail(EmailBody emailBody) throws MessagingException {
         LOGGER.info("EmailBody: {}", emailBody.toString());
-        return sendEmailTool(emailBody.getContent(), emailBody.getEmail(), emailBody.getSubject());
+        return sendEmailTool(emailBody.getEmail());
     }
 
-    private boolean sendEmailTool(String textMessage, String email, String subject) throws MessagingException {
+    private boolean sendEmailTool(String email) throws MessagingException {
         boolean send = false;
         MimeMessage message = sender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,
                 MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
                 StandardCharsets.UTF_8.name());
         try {
-            helper.addAttachment("loguito.png", new ClassPathResource("logo.png"));
-            String inlineImage = "<img src=\"cid:loguito\" width=\"200\" height=\"200\"></img><br/>";
-            helper.setText(inlineImage + textMessage, true);
-            helper.addInline("loguito", new ClassPathResource("logo.png"));
-            helper.setSubject(subject);
+            FileSystemResource file = new FileSystemResource(new File("/home/ubuntu/Tarjeta.png"));
+            helper.addAttachment("loguito.png", file);
+            String inlineImage = "<img src=\"cid:loguito\" width=\"50%\" height=\"50%\" align=\"center\"></img><br/>";
+            helper.setText(inlineImage, true);
+            helper.addInline("loguito", file);
+            helper.setSubject("HAPPY BIRTHDAY TO YOU!");
             helper.setTo(email);
             sender.send(message);
             send = true;
